@@ -1,24 +1,33 @@
-import { 
-  Phone, 
-  MessageSquare, 
-  MapPin, 
-  Star, 
-  Clock, 
-  CheckCircle2, 
-  ChevronDown, 
-  Users, 
-  Fuel, 
-  Settings2, 
+import {
+  Phone,
+  MessageSquare,
+  MapPin,
+  Star,
+  Clock,
+  CheckCircle2,
+  ChevronDown,
+  Users,
+  Fuel,
+  Settings2,
   Wind,
   Instagram,
   Facebook,
   Twitter,
   Menu,
-  X
+  X,
+  CircleFadingArrowUp,
+  ArrowRight,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/src/lib/utils";
+import car1 from "./assets/car1.png";
+import car2 from "./assets/car2.png";
+import car3 from "./assets/car3.png";
+import car4 from "./assets/car4.png";
+import car5 from "./assets/car5.png";
+import car6 from "./assets/car6.png";
+import car7 from "./assets/car7.png";
 
 // --- Constants & Data ---
 
@@ -40,7 +49,7 @@ const CARS = [
     name: "Economy Hatchback",
     type: "Economy",
     price: 250,
-    image: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&q=80&w=800",
+    image: car7,
     transmission: "Manual",
     fuel: "Petrol",
     seats: 5,
@@ -51,7 +60,7 @@ const CARS = [
     name: "Compact City Car",
     type: "Compact",
     price: 300,
-    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800",
+    image: car2,
     transmission: "Manual",
     fuel: "Petrol",
     seats: 5,
@@ -62,7 +71,7 @@ const CARS = [
     name: "Comfort Sedan",
     type: "Sedan",
     price: 400,
-    image: "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&q=80&w=800",
+    image: car3,
     transmission: "Manual",
     fuel: "Diesel",
     seats: 5,
@@ -73,7 +82,7 @@ const CARS = [
     name: "Family SUV",
     type: "SUV",
     price: 600,
-    image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&q=80&w=800",
+    image: car4,
     transmission: "Automatic",
     fuel: "Diesel",
     seats: 5,
@@ -84,7 +93,7 @@ const CARS = [
     name: "Luxury Automatic",
     type: "Automatic Option",
     price: 500,
-    image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80&w=800",
+    image: car5,
     transmission: "Automatic",
     fuel: "Petrol",
     seats: 5,
@@ -95,12 +104,12 @@ const CARS = [
     name: "Family Van",
     type: "Family Van",
     price: 800,
-    image: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&q=80&w=800",
+    image: car6,
     transmission: "Manual",
     fuel: "Diesel",
     seats: 7,
     ac: true
-  }
+  },
 ];
 
 const REVIEWS = [
@@ -169,17 +178,17 @@ const Navbar = () => {
         </div>
 
         {/* Hamburger Menu Button */}
-        <button 
+        <button
           className="flex flex-col gap-1.5 items-end group relative z-50"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          <motion.div 
+          <motion.div
             animate={isMobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-            className={cn("w-8 h-0.5 rounded-full transition-colors", isScrolled || isMobileMenuOpen ? "bg-dark" : "bg-white")} 
+            className={cn("w-8 h-0.5 rounded-full transition-colors", isScrolled || isMobileMenuOpen ? "bg-dark" : "bg-white")}
           />
-          <motion.div 
+          <motion.div
             animate={isMobileMenuOpen ? { rotate: -45, y: -2, width: "32px" } : { rotate: 0, y: 0, width: "20px" }}
-            className={cn("h-0.5 rounded-full transition-colors", isScrolled || isMobileMenuOpen ? "bg-dark" : "bg-white")} 
+            className={cn("h-0.5 rounded-full transition-colors", isScrolled || isMobileMenuOpen ? "bg-dark" : "bg-white")}
           />
         </button>
       </div>
@@ -192,42 +201,42 @@ const Navbar = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed inset-0 bg-white z-[60] flex flex-col items-center justify-center p-6 h-screen overflow-hidden"
+            className="fixed top-0 right-0 bottom-0 bg-white z-[60] flex flex-col items-center justify-center p-6 h-screen w-full md:w-[50%] overflow-hidden shadow-[-10px_0_30px_rgba(0,0,0,0.1)]"
           >
             {/* Close Button Inside Menu */}
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-dark hover:text-casper transition-colors"
             >
               <X size={32} />
             </button>
 
-            <div className="flex flex-col items-center justify-center gap-4 md:gap-8 max-h-full overflow-y-auto w-full py-12">
+            <div className="flex flex-col items-center justify-center gap-8 md:gap-8 w-full py-12 max-h-screen overflow-hidden">
               {["Home", "About", "Cars", "Why Us", "Reviews", "FAQ"].map((item, i) => (
-                <motion.a 
+                <motion.a
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  key={item} 
+                  key={item}
                   href={`#${item.toLowerCase().replace(" ", "")}`}
-                  className="text-4xl md:text-7xl font-display font-black text-dark hover:text-casper transition-colors uppercase tracking-tighter leading-none"
+                  className="text-4xl md:text-5xl font-display font-black text-dark hover:text-casper transition-colors uppercase tracking-tighter leading-none"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item}
                 </motion.a>
               ))}
-              
-              <motion.div 
+
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="flex gap-6 mt-8"
+                className="flex gap-6 mt-4"
               >
-                <a href={`tel:${BUSINESS_INFO.phone}`} className="w-14 h-14 bg-dark text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
-                  <Phone size={24} />
+                <a href={`tel:${BUSINESS_INFO.phone}`} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-dark text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
+                  <Phone size={20} />
                 </a>
-                <a href={`https://wa.me/${BUSINESS_INFO.whatsapp}`} className="w-14 h-14 bg-casper text-dark rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
-                  <MessageSquare size={24} />
+                <a href={`https://wa.me/${BUSINESS_INFO.whatsapp}`} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-casper text-dark rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
+                  <MessageSquare size={20} />
                 </a>
               </motion.div>
             </div>
@@ -243,11 +252,12 @@ const Hero = () => {
   const [direction, setDirection] = useState(0);
 
   const sliderCars = [
-    { name: "MITSUBISHI", model: "Eclipse Cross", img: "Mitsubishi_SUV_Red.png" },
-    { name: "MERCEDES", model: "AMG GT 4-Door", img: "Mercedes_AMG_White.png" },
-    { name: "BMW", model: "M2 Competition", img: "BMW_M2_White.png" },
-    { name: "BMW", model: "8 Series Gran Coupe", img: "BMW_8_Series_Black.png" },
-    { name: "HONDA", model: "Civic Type R", img: "Honda_Civic_Yellow.png" },
+    { name: "ECONOMY", model: "Hatchback", img: car1 },
+    { name: "COMPACT", model: "City Car", img: car7 },
+    { name: "COMFORT", model: "Sedan", img: car3 },
+    { name: "FAMILY", model: "SUV", img: car4 },
+    { name: "LUXURY", model: "Automatic", img: car5 },
+    { name: "LUXURY", model: "Automatic", img: car6 },
   ];
 
   useEffect(() => {
@@ -285,7 +295,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative h-screen min-h-[500px] flex items-center justify-center overflow-hidden bg-[#0a0a0a]">
+    <section id="home" className="relative h-[90vh] lg:h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#111] to-[#000]" />
 
@@ -305,34 +315,35 @@ const Hero = () => {
         >
           {/* Huge Background Text */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, scale: 1.2 }}
               animate={{ opacity: 0.1, scale: 1 }}
-              className="text-[30vw] md:text-[25vw] font-black text-white whitespace-nowrap tracking-tighter leading-none"
+              className="text-[80vw] md:text-[25vw] font-black text-white whitespace-nowrap tracking-tighter leading-none"
             >
               {sliderCars[current].name}
             </motion.h2>
           </div>
 
           {/* Car Image Container */}
-          <div className="relative z-10 w-full max-w-5xl px-4 md:px-12">
+          <div className="relative z-10 w-full max-w-3xl px-4 md:px-12">
             <div className="relative group">
-              <img 
-                src={sliderCars[current].img} 
+              <img
+                src={sliderCars[current].img}
                 alt={sliderCars[current].model}
-                className="w-full h-auto object-contain drop-shadow-[0_40px_40px_rgba(0,0,0,0.8)] scale-110 md:scale-100"
+                className="w-full h-auto object-contain drop-shadow-[0_40px_40px_rgba(0,0,0,0.8)]"
               />
-              
-              {/* Car Info Overlay */}
-              <div className="absolute -bottom-10 md:-bottom-20 left-0 right-0 text-center">
-                <motion.h3 
+
+              {/* Model Name - Bottom of Car */}
+              <div className="absolute left-0 right-0 bottom-[25%] text-center">
+                <motion.h3
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   className="text-white text-2xl md:text-6xl font-black tracking-widest uppercase italic"
+                  style={{ textShadow: '0 0.4em 0.6em rgba(0,0,0,0.7), 0 0.15em 0.25em rgba(0,0,0,0.5)' }}
                 >
                   {sliderCars[current].model}
                 </motion.h3>
-                <div className="w-20 md:w-40 h-1 bg-casper mx-auto mt-3 md:mt-6" />
+                <div className="w-20 md:w-40 h-1 bg-casper mx-auto mt-3 md:mt-4" />
               </div>
             </div>
           </div>
@@ -340,14 +351,14 @@ const Hero = () => {
       </AnimatePresence>
 
       {/* Navigation Arrows */}
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 md:px-12 z-20 pointer-events-none">
-        <button 
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-0 md:px-12 z-20 pointer-events-none">
+        <button
           onClick={prev}
           className="text-white/50 hover:text-white transition-all pointer-events-auto hover:scale-125 active:scale-90"
         >
           <ChevronDown className="rotate-90 w-10 h-10 md:w-16 md:h-16" />
         </button>
-        <button 
+        <button
           onClick={next}
           className="text-white/50 hover:text-white transition-all pointer-events-auto hover:scale-125 active:scale-90"
         >
@@ -355,22 +366,10 @@ const Hero = () => {
         </button>
       </div>
 
-      {/* Bottom CTA */}
-      <div className="absolute bottom-12 md:bottom-20 left-1/2 -translate-x-1/2 z-20">
-        <motion.a
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          href="#cars"
-          className="bg-white text-dark px-6 md:px-16 py-3 md:py-6 rounded-full font-black text-[10px] md:text-sm tracking-[0.4em] uppercase shadow-2xl hover:bg-casper transition-all"
-        >
-          Explore Fleet
-        </motion.a>
-      </div>
-
       {/* Slider Indicators */}
-      <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+      <div className="absolute bottom-28 left-1/2 -translate-x-1/2 flex gap-3 z-20">
         {sliderCars.map((_, i) => (
-          <button 
+          <button
             key={i}
             onClick={() => {
               setDirection(i > current ? 1 : -1);
@@ -382,6 +381,26 @@ const Hero = () => {
             )}
           />
         ))}
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="absolute flex justify-center items-center gap-4 m-0 p-0 bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-20">
+        <motion.a
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          href="#cars"
+          className="flex items-center gap-2 bg-white text-dark px-6 md:px-12 py-3 md:py-4 rounded-full font-black text-[10px] md:text-sm tracking-[0.2em] md:tracking-[0.4em] uppercase whitespace-nowrap shadow-2xl hover:bg-casper/80 transition-all"
+        >
+          Contact Us <Phone size={20} />
+        </motion.a>
+        <motion.a
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          href="#cars"
+          className="flex items-center gap-2 bg-transparent border border-white text-white px-6 md:px-12 py-3 md:py-4 rounded-full font-black text-[10px] md:text-sm md:tracking-[0.4em] uppercase whitespace-nowrap shadow-2xl hover:bg-casper hover:border-transparent transition-all"
+        >
+          Explore Fleet <ArrowRight size={20} />
+        </motion.a>
       </div>
     </section>
   );
@@ -439,7 +458,7 @@ const About = () => {
               </div>
             </div>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -448,9 +467,9 @@ const About = () => {
             className="relative"
           >
             <div className="aspect-video md:aspect-square rounded-3xl overflow-hidden shadow-2xl bg-casper">
-              <img 
-                src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000" 
-                alt="Our Fleet" 
+              <img
+                src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1000"
+                alt="Our Fleet"
                 className="w-full h-full object-cover mix-blend-multiply opacity-80"
               />
             </div>
@@ -472,19 +491,19 @@ const CarCard = ({ car, index }: CarCardProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="bg-white rounded-3xl overflow-hidden car-card-shadow group transition-all duration-500 border border-slate-100"
+      className="bg-white rounded-3xl car-card-shadow group transition-all duration-500 border border-slate-100"
     >
-      <div className="relative h-48 md:h-56 overflow-hidden">
-        <img 
-          src={car.image} 
-          alt={car.name} 
+      <div className="relative h-48 md:h-56">
+        <img
+          src={car.image}
+          alt={car.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] md:text-xs font-bold text-dark shadow-sm">
+        <div className="absolute top-4 right-4 bg-casper/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] md:text-xs font-bold text-dark shadow-sm">
           {car.type}
         </div>
       </div>
-      
+
       <div className="p-3 md:p-6">
         <div className="flex justify-between items-start mb-3 md:mb-4">
           <h3 className="text-base md:text-xl font-bold text-dark">{car.name}</h3>
@@ -517,6 +536,8 @@ const CarCard = ({ car, index }: CarCardProps) => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           href={`https://wa.me/${BUSINESS_INFO.whatsapp}?text=I'm interested in renting the ${car.name}`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="w-full bg-slate-50 group-hover:bg-dark group-hover:text-white text-slate-900 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 text-sm md:text-base"
         >
           <MessageSquare size={18} />
@@ -532,7 +553,7 @@ const CarSection = () => {
     <section id="cars" className="py-16 md:py-24 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12 md:mb-16">
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             className="text-dove font-bold tracking-widest uppercase text-xs md:text-sm mb-4 block"
@@ -604,10 +625,10 @@ const WhyChooseUs = () => {
             <p className="text-slate-500 text-sm md:text-lg mb-10 leading-relaxed">
               We pride ourselves on providing a seamless rental experience. Whether you're a local or a visitor, we make sure you have the right vehicle for your journey.
             </p>
-            
+
             <div className="grid sm:grid-cols-2 gap-6">
               {features.map((f, i) => (
-                <motion.div 
+                <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -627,23 +648,23 @@ const WhyChooseUs = () => {
             </div>
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             className="relative"
           >
             <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl">
-              <img 
-                src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1000" 
-                alt="Happy customer" 
+              <img
+                src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1000"
+                alt="Happy customer"
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="absolute -bottom-4 -left-4 md:-bottom-8 md:-left-8 bg-dark p-6 md:p-8 rounded-3xl text-white shadow-xl hidden sm:block">
               <div className="text-3xl md:text-4xl font-extrabold mb-1">5.0</div>
               <div className="flex gap-1 mb-2">
-                {[1,2,3,4,5].map(s => <Star key={s} size={14} className="fill-white" />)}
+                {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} className="fill-white" />)}
               </div>
               <div className="text-[10px] md:text-sm font-medium opacity-80">Based on 29+ real reviews</div>
             </div>
@@ -687,9 +708,9 @@ const HowItWorks = () => {
         <div className="grid md:grid-cols-3 gap-8 md:gap-12 relative">
           {/* Connecting Line */}
           <div className="hidden md:block absolute top-24 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent z-0" />
-          
+
           {steps.map((step, i) => (
-            <motion.div 
+            <motion.div
               key={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -719,15 +740,15 @@ const Reviews = () => {
           <h2 className="text-4xl md:text-5xl font-extrabold text-dark mb-6">Customer Reviews</h2>
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="flex gap-1">
-              {[1,2,3,4,5].map(s => <Star key={s} size={20} className="fill-yellow-400 text-yellow-400" />)}
+              {[1, 2, 3, 4, 5].map(s => <Star key={s} size={20} className="fill-yellow-400 text-yellow-400" />)}
             </div>
             <span className="font-bold text-dark">5.0 Rating</span>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
           {REVIEWS.map((review, i) => (
-            <motion.div 
+            <motion.div
               key={review.id}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -736,7 +757,7 @@ const Reviews = () => {
               className="bg-slate-50 p-8 rounded-3xl border border-slate-100"
             >
               <div className="flex gap-1 mb-4">
-                {[1,2,3,4,5].map(s => <Star key={s} size={14} className="fill-yellow-400 text-yellow-400" />)}
+                {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} className="fill-yellow-400 text-yellow-400" />)}
               </div>
               <p className="text-slate-600 italic mb-6 leading-relaxed">"{review.text}"</p>
               <div className="flex items-center gap-3">
@@ -761,7 +782,7 @@ const Contact = () => {
           <div className="grid lg:grid-cols-2">
             <div className="p-8 md:p-16">
               <h2 className="text-3xl md:text-4xl font-extrabold text-dark mb-8">Get In Touch</h2>
-              
+
               <div className="space-y-6 md:space-y-8 mb-12">
                 <div className="flex gap-4 md:gap-6">
                   <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-100 rounded-2xl flex items-center justify-center flex-shrink-0">
@@ -798,7 +819,7 @@ const Contact = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <a 
+                <a
                   href={BUSINESS_INFO.mapsLink}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -807,8 +828,10 @@ const Contact = () => {
                   <MapPin size={20} />
                   Get Directions
                 </a>
-                <a 
+                <a
                   href={`https://wa.me/${BUSINESS_INFO.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-casper text-dark px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-casper/80 transition-all text-sm md:text-base"
                 >
                   <MessageSquare size={20} />
@@ -818,13 +841,13 @@ const Contact = () => {
             </div>
 
             <div className="relative h-[400px] lg:h-auto bg-slate-200">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3072.62601920922!2d-4.840173053748704!3d33.83054770445643!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd9f9b438e61f353%3A0x31b22bbe17864646!2sZiaSri%20car!5e1!3m2!1sen!2sma!4v1772033141912!5m2!1sen!2sma" 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0 }} 
-                allowFullScreen={true} 
-                loading="lazy" 
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3072.62601920922!2d-4.840173053748704!3d33.83054770445643!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd9f9b438e61f353%3A0x31b22bbe17864646!2sZiaSri%20car!5e1!3m2!1sen!2sma!4v1772033141912!5m2!1sen!2sma"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={true}
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 className="absolute inset-0"
               ></iframe>
@@ -850,7 +873,7 @@ const FAQ = () => {
         <div className="space-y-4">
           {FAQS.map((faq, i) => (
             <div key={i} className="border border-slate-100 rounded-2xl overflow-hidden">
-              <button 
+              <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
                 className="w-full p-6 text-left flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
               >
@@ -896,7 +919,7 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               {[Instagram, Facebook, Twitter].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-accent transition-colors">
+                <a key={i} href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-casper hover:text-black transition-colors">
                   <Icon size={18} />
                 </a>
               ))}
@@ -917,23 +940,23 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-6 text-lg">Contact Info</h4>
             <ul className="space-y-4 text-slate-400">
-              <li className="flex gap-3">
-                <MapPin size={18} className="text-accent flex-shrink-0" />
+              <li className="flex gap-3 items-center">
+                <MapPin size={18} className="text-casper flex-shrink-0" />
                 <span>{BUSINESS_INFO.location}</span>
               </li>
-              <li className="flex gap-3">
-                <Phone size={18} className="text-accent flex-shrink-0" />
-                <span>{BUSINESS_INFO.phone}</span>
+              <li className="flex gap-3 items-center">
+                <Phone size={18} className="text-casper flex-shrink-0" />
+                <span>{BUSINESS_INFO.phone} (WhatsApp)</span>
               </li>
-              <li className="flex gap-3">
-                <Clock size={18} className="text-accent flex-shrink-0" />
+              <li className="flex gap-3 items-center">
+                <Clock size={18} className="text-casper flex-shrink-0" />
                 <span>Open 24 Hours</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/10 flex flex-col md:row justify-between items-center gap-4 text-slate-500 text-sm">
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-sm">
           <p>© {new Date().getFullYear()} ZiaSri car. All rights reserved.</p>
           <div className="flex gap-8">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
@@ -960,7 +983,7 @@ export default function App() {
         <FAQ />
       </main>
       <Footer />
-      
+
       {/* Floating WhatsApp Button for Mobile */}
       <motion.a
         initial={{ scale: 0, opacity: 0 }}
@@ -968,6 +991,8 @@ export default function App() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         href={`https://wa.me/${BUSINESS_INFO.whatsapp}`}
+        target="_blank"
+        rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-40 bg-[#25D366] text-white p-4 rounded-full shadow-2xl md:hidden"
       >
         <MessageSquare size={24} />
