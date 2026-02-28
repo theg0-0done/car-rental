@@ -17,17 +17,13 @@ import {
   X,
   CircleFadingArrowUp,
   ArrowRight,
+  Globe,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/src/lib/utils";
-import car1 from "./assets/car1.png";
-import car2 from "./assets/car2.png";
-import car3 from "./assets/car3.png";
-import car4 from "./assets/car4.png";
-import car5 from "./assets/car5.png";
-import car6 from "./assets/car6.png";
-import car7 from "./assets/car7.png";
+import { supabase } from "./supabase";
+import { useI18n, LANGUAGES, type Lang } from "./i18n";
 
 // --- Constants & Data ---
 
@@ -43,120 +39,54 @@ const BUSINESS_INFO = {
   mapsLink: "https://www.google.com/maps/search/?api=1&query=R5J7%2B6V+Sefrou"
 };
 
-const CARS = [
-  {
-    id: 1,
-    name: "Economy Hatchback",
-    type: "Economy",
-    price: 250,
-    image: car7,
-    transmission: "Manual",
-    fuel: "Petrol",
-    seats: 5,
-    ac: true
-  },
-  {
-    id: 2,
-    name: "Compact City Car",
-    type: "Compact",
-    price: 300,
-    image: car2,
-    transmission: "Manual",
-    fuel: "Petrol",
-    seats: 5,
-    ac: true
-  },
-  {
-    id: 3,
-    name: "Comfort Sedan",
-    type: "Sedan",
-    price: 400,
-    image: car3,
-    transmission: "Manual",
-    fuel: "Diesel",
-    seats: 5,
-    ac: true
-  },
-  {
-    id: 4,
-    name: "Family SUV",
-    type: "SUV",
-    price: 600,
-    image: car4,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    seats: 5,
-    ac: true
-  },
-  {
-    id: 5,
-    name: "Luxury Automatic",
-    type: "Automatic Option",
-    price: 500,
-    image: car5,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    seats: 5,
-    ac: true
-  },
-  {
-    id: 6,
-    name: "Family Van",
-    type: "Family Van",
-    price: 800,
-    image: car6,
-    transmission: "Manual",
-    fuel: "Diesel",
-    seats: 7,
-    ac: true
-  },
-];
+export interface Car {
+  id: number;
+  name: string;
+  type: string;
+  price: number;
+  image: string;
+  transmission: string;
+  fuel: string;
+  seats: number;
+  ac: boolean;
+}
 
-const REVIEWS = [
-  {
-    id: 1,
-    name: "Ahmed L.",
-    rating: 5,
-    text: "Good service, thank you for everything. The car was clean and the pickup was very fast."
-  },
-  {
-    id: 2,
-    name: "Sarah M.",
-    rating: 5,
-    text: "Thank you for your best service. Very professional team and easy communication via WhatsApp."
-  },
-  {
-    id: 3,
-    name: "Youssef B.",
-    rating: 5,
-    text: "Professional and reliable. I rent from them every time I visit Sefrou. Highly recommended!"
-  }
-];
+interface Review {
+  id: number;
+  "review-text": string;
+  "review-text-fr": string;
+  "review-text-ar": string;
+  "customer-name": string;
+  rating: number;
+  [key: string]: any;
+}
 
-const FAQS = [
-  {
-    question: "What documents are required?",
-    answer: "You need a valid driver's license (held for at least 1-2 years depending on the car category), a valid passport or ID card, and a security deposit."
-  },
-  {
-    question: "Can I rent 24/7?",
-    answer: "Yes! ZiaSri car is open 24 hours a day. You can pick up or drop off your vehicle at any time that suits your schedule."
-  },
-  {
-    question: "Is there a deposit?",
-    answer: "Yes, a security deposit is required for all rentals. The amount depends on the vehicle type and is fully refundable upon returning the car in its original condition."
-  },
-  {
-    question: "Do you offer long-term rental discounts?",
-    answer: "Absolutely. We offer competitive rates for long-term rentals (weekly or monthly). Contact us on WhatsApp for a personalized quote."
-  }
-];
+interface FaqItem {
+  id: number;
+  "question-en": string;
+  "answer-en": string;
+  "question-fr": string;
+  "answer-fr": string;
+  "question-ar": string;
+  "answer-ar": string;
+  [key: string]: any;
+}
 
 // --- Components ---
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useI18n();
+
+  const navItems = [
+    { key: "nav.home", href: "home" },
+    { key: "nav.about", href: "about" },
+    { key: "nav.cars", href: "cars" },
+    { key: "nav.whyus", href: "whyus" },
+    { key: "nav.reviews", href: "reviews" },
+    { key: "nav.faq", href: "faq" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -212,17 +142,17 @@ const Navbar = () => {
             </button>
 
             <div className="flex flex-col items-center justify-center gap-8 md:gap-8 w-full py-12 max-h-screen overflow-hidden">
-              {["Home", "About", "Cars", "Why Us", "Reviews", "FAQ"].map((item, i) => (
+              {navItems.map((item, i) => (
                 <motion.a
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  key={item}
-                  href={`#${item.toLowerCase().replace(" ", "")}`}
+                  key={item.key}
+                  href={`#${item.href}`}
                   className="text-4xl md:text-5xl font-display font-black text-dark hover:text-casper transition-colors uppercase tracking-tighter leading-none"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {item}
+                  {t(item.key)}
                 </motion.a>
               ))}
 
@@ -247,32 +177,35 @@ const Navbar = () => {
   );
 };
 
-const Hero = () => {
+const Hero = ({ cars }: { cars: Car[] }) => {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
+  const { t } = useI18n();
 
-  const sliderCars = [
-    { name: "ECONOMY", model: "Hatchback", img: car1 },
-    { name: "COMPACT", model: "City Car", img: car7 },
-    { name: "COMFORT", model: "Sedan", img: car3 },
-    { name: "FAMILY", model: "SUV", img: car4 },
-    { name: "LUXURY", model: "Automatic", img: car5 },
-    { name: "LUXURY", model: "Automatic", img: car6 },
-  ];
+  const sliderCars = cars.map(car => ({
+    name: car.type.toUpperCase(),
+    model: car.name,
+    img: car.image
+  }));
+
+  const hasCars = sliderCars.length > 0;
 
   useEffect(() => {
+    if (!hasCars) return;
     const timer = setInterval(() => {
       setDirection(1);
       setCurrent((prev) => (prev + 1) % sliderCars.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [hasCars, sliderCars.length]);
 
   const next = () => {
+    if (!hasCars) return;
     setDirection(1);
     setCurrent((prev) => (prev + 1) % sliderCars.length);
   };
   const prev = () => {
+    if (!hasCars) return;
     setDirection(-1);
     setCurrent((prev) => (prev - 1 + sliderCars.length) % sliderCars.length);
   };
@@ -320,18 +253,20 @@ const Hero = () => {
               animate={{ opacity: 0.1, scale: 1 }}
               className="text-[80vw] md:text-[25vw] font-black text-white whitespace-nowrap tracking-tighter leading-none"
             >
-              {sliderCars[current].name}
+              {hasCars ? sliderCars[current]?.name : ""}
             </motion.h2>
           </div>
 
           {/* Car Image Container */}
           <div className="relative z-10 w-full max-w-3xl px-4 md:px-12">
             <div className="relative group">
-              <img
-                src={sliderCars[current].img}
-                alt={sliderCars[current].model}
-                className="w-full h-auto object-contain drop-shadow-[0_40px_40px_rgba(0,0,0,0.8)]"
-              />
+              {hasCars && (
+                <img
+                  src={sliderCars[current]?.img}
+                  alt={sliderCars[current]?.model}
+                  className="w-full h-auto object-contain drop-shadow-[0_40px_40px_rgba(0,0,0,0.8)]"
+                />
+              )}
 
               {/* Model Name - Bottom of Car */}
               <div className="absolute left-0 right-0 bottom-[25%] text-center">
@@ -341,7 +276,7 @@ const Hero = () => {
                   className="text-white text-2xl md:text-6xl font-black tracking-widest uppercase italic"
                   style={{ textShadow: '0 0.4em 0.6em rgba(0,0,0,0.7), 0 0.15em 0.25em rgba(0,0,0,0.5)' }}
                 >
-                  {sliderCars[current].model}
+                  {hasCars ? sliderCars[current]?.model : ""}
                 </motion.h3>
                 <div className="w-20 md:w-40 h-1 bg-casper mx-auto mt-3 md:mt-4" />
               </div>
@@ -368,7 +303,7 @@ const Hero = () => {
 
       {/* Slider Indicators */}
       <div className="absolute bottom-28 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-        {sliderCars.map((_, i) => (
+        {hasCars && sliderCars.map((_, i) => (
           <button
             key={i}
             onClick={() => {
@@ -391,7 +326,7 @@ const Hero = () => {
           href="#cars"
           className="flex items-center gap-2 bg-white text-dark px-6 md:px-12 py-3 md:py-4 rounded-full font-black text-[10px] md:text-sm tracking-[0.2em] md:tracking-[0.4em] uppercase whitespace-nowrap shadow-2xl hover:bg-casper/80 transition-all"
         >
-          Contact Us <Phone size={20} />
+          {t("hero.contact")} <Phone size={20} />
         </motion.a>
         <motion.a
           whileHover={{ scale: 1.05 }}
@@ -399,7 +334,7 @@ const Hero = () => {
           href="#cars"
           className="flex items-center gap-2 bg-transparent border border-white text-white px-6 md:px-12 py-3 md:py-4 rounded-full font-black text-[10px] md:text-sm md:tracking-[0.4em] uppercase whitespace-nowrap shadow-2xl hover:bg-casper hover:border-transparent transition-all"
         >
-          Explore Fleet <ArrowRight size={20} />
+          {t("hero.explore")} <ArrowRight size={20} />
         </motion.a>
       </div>
     </section>
@@ -409,21 +344,12 @@ const Hero = () => {
 
 interface CarCardProps {
   key?: number;
-  car: {
-    id: number;
-    name: string;
-    type: string;
-    price: number;
-    image: string;
-    transmission: string;
-    fuel: string;
-    seats: number;
-    ac: boolean;
-  };
+  car: Car;
   index: number;
 }
 
 const About = () => {
+  const { t } = useI18n();
   return (
     <section id="about" className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -434,16 +360,16 @@ const About = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="text-dove font-bold tracking-widest uppercase text-xs md:text-sm mb-4 block">About ZiaSri car</span>
+            <span className="text-dove font-bold tracking-widest uppercase text-xs md:text-sm mb-4 block">{t("about.label")}</span>
             <h2 className="text-2xl md:text-5xl font-extrabold text-dark mb-6 leading-tight">
-              Your Local Travel Partner <br className="hidden md:block" />
-              Since Day One
+              {t("about.title1")} <br className="hidden md:block" />
+              {t("about.title2")}
             </h2>
             <p className="text-slate-600 text-sm md:text-lg mb-6 leading-relaxed">
-              Located in the heart of Sefrou, ZiaSri car has been providing reliable transportation solutions to both locals and tourists for years. We understand that a car is more than just a vehicle; it's your key to exploring the beautiful landscapes of Morocco.
+              {t("about.p1")}
             </p>
             <p className="text-slate-600 text-sm md:text-lg mb-8 leading-relaxed">
-              Our mission is simple: to offer the best car rental experience through transparent pricing, exceptionally maintained vehicles, and a 24/7 commitment to our customers' needs.
+              {t("about.p2")}
             </p>
             <div className="flex items-center gap-4">
               <div className="flex -space-x-3">
@@ -454,7 +380,7 @@ const About = () => {
                 ))}
               </div>
               <div className="text-xs md:text-sm text-slate-500 font-medium">
-                Joined by <span className="text-dark font-bold">500+</span> happy travelers
+                {t("about.joinedBy")} <span className="text-dark font-bold">500+</span> {t("about.travelers")}
               </div>
             </div>
           </motion.div>
@@ -475,7 +401,7 @@ const About = () => {
             </div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-center">
               <div className="text-4xl md:text-6xl font-black mb-2">100%</div>
-              <div className="text-xs md:text-sm font-bold tracking-widest uppercase">Local Expertise</div>
+              <div className="text-xs md:text-sm font-bold tracking-widest uppercase">{t("about.localExpertise")}</div>
             </div>
           </motion.div>
         </div>
@@ -485,6 +411,7 @@ const About = () => {
 };
 
 const CarCard = ({ car, index }: CarCardProps) => {
+  const { t } = useI18n();
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -509,7 +436,7 @@ const CarCard = ({ car, index }: CarCardProps) => {
           <h3 className="text-base md:text-xl font-bold text-dark">{car.name}</h3>
           <div className="text-right">
             <span className="text-lg md:text-2xl font-extrabold text-dark">{car.price}</span>
-            <span className="text-[9px] md:text-xs text-slate-500 font-medium block uppercase tracking-tighter">MAD / day</span>
+            <span className="text-[9px] md:text-xs text-slate-500 font-medium block uppercase tracking-tighter">{t("cars.perDay")}</span>
           </div>
         </div>
 
@@ -524,7 +451,7 @@ const CarCard = ({ car, index }: CarCardProps) => {
           </div>
           <div className="flex items-center gap-1.5 md:gap-2 text-slate-600 text-[10px] md:text-sm">
             <Users size={12} className="text-slate-400 md:w-4 md:h-4" />
-            {car.seats} Seats
+            {car.seats} {t("cars.seats")}
           </div>
           <div className="flex items-center gap-1.5 md:gap-2 text-slate-600 text-[10px] md:text-sm">
             <Wind size={12} className="text-slate-400 md:w-4 md:h-4" />
@@ -535,20 +462,21 @@ const CarCard = ({ car, index }: CarCardProps) => {
         <motion.a
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          href={`https://wa.me/${BUSINESS_INFO.whatsapp}?text=I'm interested in renting the ${car.name}`}
+          href={`https://wa.me/${BUSINESS_INFO.whatsapp}?text=${t("cars.whatsappMsg")} ${car.name}`}
           target="_blank"
           rel="noopener noreferrer"
           className="w-full bg-slate-50 group-hover:bg-dark group-hover:text-white text-slate-900 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 text-sm md:text-base"
         >
           <MessageSquare size={18} />
-          Book Now
+          {t("cars.bookNow")}
         </motion.a>
       </div>
     </motion.div>
   );
 };
 
-const CarSection = () => {
+const CarSection = ({ cars }: { cars: Car[] }) => {
+  const { t } = useI18n();
   return (
     <section id="cars" className="py-16 md:py-24 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-6">
@@ -558,18 +486,18 @@ const CarSection = () => {
             whileInView={{ opacity: 1 }}
             className="text-dove font-bold tracking-widest uppercase text-xs md:text-sm mb-4 block"
           >
-            Our Fleet
+            {t("cars.label")}
           </motion.span>
           <h2 className="text-xl md:text-5xl font-extrabold text-dark mb-6">
-            Available Cars & Daily Rates
+            {t("cars.title")}
           </h2>
           <p className="text-slate-500 max-w-2xl mx-auto text-xs md:text-lg">
-            Choose from our diverse range of well-maintained vehicles. From economy city cars to spacious family SUVs.
+            {t("cars.subtitle")}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {CARS.map((car, index) => (
+          {cars.map((car, index) => (
             <CarCard key={car.id} car={car} index={index} />
           ))}
         </div>
@@ -579,35 +507,36 @@ const CarSection = () => {
 };
 
 const WhyChooseUs = () => {
+  const { t } = useI18n();
   const features = [
     {
-      title: "24/7 Availability",
-      desc: "Pick up or drop off your car at any time. We never close.",
+      title: t("why.feat1.title"),
+      desc: t("why.feat1.desc"),
       icon: <Clock className="text-dark" size={24} />
     },
     {
-      title: "Easy WhatsApp Booking",
-      desc: "No complex forms. Just send us a message and book in seconds.",
+      title: t("why.feat2.title"),
+      desc: t("why.feat2.desc"),
       icon: <MessageSquare className="text-dark" size={24} />
     },
     {
-      title: "Well Maintained Cars",
-      desc: "Our fleet is regularly serviced to ensure your safety and comfort.",
+      title: t("why.feat3.title"),
+      desc: t("why.feat3.desc"),
       icon: <CheckCircle2 className="text-dark" size={24} />
     },
     {
-      title: "Transparent Pricing",
-      desc: "No hidden fees. What you see is what you pay.",
+      title: t("why.feat4.title"),
+      desc: t("why.feat4.desc"),
       icon: <Star className="text-dark" size={24} />
     },
     {
-      title: "Friendly Local Service",
-      desc: "We are locals who care about your experience in Sefrou.",
+      title: t("why.feat5.title"),
+      desc: t("why.feat5.desc"),
       icon: <Users className="text-dark" size={24} />
     },
     {
-      title: "Quick Pickup Process",
-      desc: "Get your keys and be on the road in less than 10 minutes.",
+      title: t("why.feat6.title"),
+      desc: t("why.feat6.desc"),
       icon: <Settings2 className="text-dark" size={24} />
     }
   ];
@@ -617,13 +546,13 @@ const WhyChooseUs = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 md:gap-16 items-center">
           <div>
-            <span className="text-dove font-bold tracking-widest uppercase text-xs md:text-sm mb-4 block">Why ZiaSri car</span>
+            <span className="text-dove font-bold tracking-widest uppercase text-xs md:text-sm mb-4 block">{t("why.label")}</span>
             <h2 className="text-2xl md:text-5xl font-extrabold text-dark mb-8 leading-tight">
-              The Most Trusted Car Rental <br className="hidden md:block" />
-              Service in Sefrou
+              {t("why.title1")} <br className="hidden md:block" />
+              {t("why.title2")}
             </h2>
             <p className="text-slate-500 text-sm md:text-lg mb-10 leading-relaxed">
-              We pride ourselves on providing a seamless rental experience. Whether you're a local or a visitor, we make sure you have the right vehicle for your journey.
+              {t("why.subtitle")}
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6">
@@ -666,7 +595,7 @@ const WhyChooseUs = () => {
               <div className="flex gap-1 mb-2">
                 {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} className="fill-white" />)}
               </div>
-              <div className="text-[10px] md:text-sm font-medium opacity-80">Based on 29+ real reviews</div>
+              <div className="text-[10px] md:text-sm font-medium opacity-80">{t("why.reviews")}</div>
             </div>
           </motion.div>
         </div>
@@ -676,23 +605,24 @@ const WhyChooseUs = () => {
 };
 
 const HowItWorks = () => {
+  const { t } = useI18n();
   const steps = [
     {
       id: "01",
-      title: "Contact Us",
-      desc: "Reach out via WhatsApp or Call to check availability.",
+      title: t("how.step1.title"),
+      desc: t("how.step1.desc"),
       icon: <MessageSquare size={28} />
     },
     {
       id: "02",
-      title: "Choose Your Car",
-      desc: "Select the vehicle that fits your needs and budget.",
+      title: t("how.step2.title"),
+      desc: t("how.step2.desc"),
       icon: <Settings2 size={28} />
     },
     {
       id: "03",
-      title: "Pickup & Drive",
-      desc: "Complete the quick paperwork and start your journey.",
+      title: t("how.step3.title"),
+      desc: t("how.step3.desc"),
       icon: <CheckCircle2 size={28} />
     }
   ];
@@ -701,8 +631,8 @@ const HowItWorks = () => {
     <section className="py-16 md:py-24 bg-dark text-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12 md:mb-20">
-          <h2 className="text-3xl md:text-5xl font-extrabold mb-6">How It Works</h2>
-          <p className="text-slate-400 text-sm md:text-lg">Simple 3-step process to get you on the road.</p>
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-6">{t("how.title")}</h2>
+          <p className="text-slate-400 text-sm md:text-lg">{t("how.subtitle")}</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 md:gap-12 relative">
@@ -732,22 +662,33 @@ const HowItWorks = () => {
   );
 };
 
-const Reviews = () => {
+const Reviews = ({ reviews }: { reviews: Review[] }) => {
+  const { t, lang } = useI18n();
+
+  const getReviewText = (review: Review) => {
+    if (lang === "fr") return review["review-text-fr"] || review["review-text"];
+    if (lang === "ar") return review["review-text-ar"] || review["review-text"];
+    return review["review-text"];
+  };
+  if (reviews.length === 0) return null;
+
+  const avgRating = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
+
   return (
     <section id="reviews" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-dark mb-6">Customer Reviews</h2>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-dark mb-6">{t("reviews.title")}</h2>
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map(s => <Star key={s} size={20} className="fill-yellow-400 text-yellow-400" />)}
+              {[1, 2, 3, 4, 5].map(s => <Star key={s} size={20} className={s <= Math.round(Number(avgRating)) ? "fill-yellow-400 text-yellow-400" : "text-slate-200"} />)}
             </div>
-            <span className="font-bold text-dark">5.0 Rating</span>
+            <span className="font-bold text-dark">{avgRating} {t("reviews.rating")}</span>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {REVIEWS.map((review, i) => (
+          {reviews.map((review, i) => (
             <motion.div
               key={review.id}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -757,14 +698,14 @@ const Reviews = () => {
               className="bg-slate-50 p-8 rounded-3xl border border-slate-100"
             >
               <div className="flex gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} className="fill-yellow-400 text-yellow-400" />)}
+                {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} className={s <= review.rating ? "fill-yellow-400 text-yellow-400" : "text-slate-200"} />)}
               </div>
-              <p className="text-slate-600 italic mb-6 leading-relaxed">"{review.text}"</p>
+              <p className="text-slate-600 italic mb-6 leading-relaxed">"{getReviewText(review)}"</p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-accent/20 rounded-full flex items-center justify-center text-accent font-bold">
-                  {review.name[0]}
+                  {review["customer-name"][0]}
                 </div>
-                <span className="font-bold text-dark">{review.name}</span>
+                <span className="font-bold text-dark">{review["customer-name"]}</span>
               </div>
             </motion.div>
           ))}
@@ -775,21 +716,22 @@ const Reviews = () => {
 };
 
 const Contact = () => {
+  const { t } = useI18n();
   return (
     <section id="contact" className="py-16 md:py-24 bg-slate-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="bg-white rounded-[40px] overflow-hidden shadow-2xl border border-slate-100">
           <div className="grid lg:grid-cols-2">
             <div className="p-8 md:p-16">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-dark mb-8">Get In Touch</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-dark mb-8">{t("contact.title")}</h2>
 
               <div className="space-y-6 md:space-y-8 mb-12">
                 <div className="flex gap-4 md:gap-6">
                   <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <MapPin className="text-dark" size={24} md:size={28} />
+                    <MapPin className="text-dark" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-dark text-base md:text-lg mb-1">Location</h4>
+                    <h4 className="font-bold text-dark text-base md:text-lg mb-1">{t("contact.location")}</h4>
                     <p className="text-slate-500 text-sm md:text-base">{BUSINESS_INFO.location}</p>
                     <p className="text-dove font-medium text-xs mt-1">Plus Code: {BUSINESS_INFO.plusCode}</p>
                   </div>
@@ -797,10 +739,10 @@ const Contact = () => {
 
                 <div className="flex gap-4 md:gap-6">
                   <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <Phone className="text-dark" size={24} md:size={28} />
+                    <Phone className="text-dark" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-dark text-base md:text-lg mb-1">Phone</h4>
+                    <h4 className="font-bold text-dark text-base md:text-lg mb-1">{t("contact.phone")}</h4>
                     <a href={`tel:${BUSINESS_INFO.phone}`} className="text-slate-500 hover:text-dark transition-colors text-sm md:text-base">
                       {BUSINESS_INFO.phone}
                     </a>
@@ -809,10 +751,10 @@ const Contact = () => {
 
                 <div className="flex gap-4 md:gap-6">
                   <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <Clock className="text-dark" size={24} md:size={28} />
+                    <Clock className="text-dark" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-dark text-base md:text-lg mb-1">Open Hours</h4>
+                    <h4 className="font-bold text-dark text-base md:text-lg mb-1">{t("contact.openHours")}</h4>
                     <p className="text-slate-500 text-sm md:text-base">{BUSINESS_INFO.openHours}</p>
                   </div>
                 </div>
@@ -826,7 +768,7 @@ const Contact = () => {
                   className="bg-dark text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all text-sm md:text-base"
                 >
                   <MapPin size={20} />
-                  Get Directions
+                  {t("contact.directions")}
                 </a>
                 <a
                   href={`https://wa.me/${BUSINESS_INFO.whatsapp}`}
@@ -835,7 +777,7 @@ const Contact = () => {
                   className="bg-casper text-dark px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-casper/80 transition-all text-sm md:text-base"
                 >
                   <MessageSquare size={20} />
-                  WhatsApp Us
+                  {t("contact.whatsapp")}
                 </a>
               </div>
             </div>
@@ -859,25 +801,37 @@ const Contact = () => {
   );
 };
 
-const FAQ = () => {
+const FAQ = ({ faqs }: { faqs: FaqItem[] }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const { t, lang } = useI18n();
+
+  const getFaqQuestion = (faq: FaqItem) => {
+    const key = `question-${lang}` as keyof FaqItem;
+    return (faq[key] as string) || faq["question-en"];
+  };
+  const getFaqAnswer = (faq: FaqItem) => {
+    const key = `answer-${lang}` as keyof FaqItem;
+    return (faq[key] as string) || faq["answer-en"];
+  };
+
+  if (faqs.length === 0) return null;
 
   return (
     <section id="faq" className="py-24 bg-white">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-extrabold text-dark mb-6">Frequently Asked Questions</h2>
-          <p className="text-slate-500">Everything you need to know about renting a car with us.</p>
+          <h2 className="text-4xl font-extrabold text-dark mb-6">{t("faq.title")}</h2>
+          <p className="text-slate-500">{t("faq.subtitle")}</p>
         </div>
 
         <div className="space-y-4">
-          {FAQS.map((faq, i) => (
+          {faqs.map((faq, i) => (
             <div key={i} className="border border-slate-100 rounded-2xl overflow-hidden">
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
                 className="w-full p-6 text-left flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
               >
-                <span className="font-bold text-dark md:text-lg">{faq.question}</span>
+                <span className="font-bold text-dark md:text-lg">{getFaqQuestion(faq)}</span>
                 <ChevronDown className={cn("text-slate-400 transition-transform duration-300", openIndex === i && "rotate-180")} />
               </button>
               <AnimatePresence>
@@ -889,7 +843,7 @@ const FAQ = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <div className="p-6 pt-0 text-slate-500 leading-relaxed border-t border-slate-50">
-                      {faq.answer}
+                      {getFaqAnswer(faq)}
                     </div>
                   </motion.div>
                 )}
@@ -902,7 +856,65 @@ const FAQ = () => {
   );
 };
 
+const LanguageDropdown = () => {
+  const { lang, setLang, t } = useI18n();
+  const [isOpen, setIsOpen] = useState(false);
+  const currentLang = LANGUAGES.find((l) => l.code === lang)!;
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2.5 rounded-xl transition-colors text-sm"
+      >
+        <span className="text-lg">{currentLang.flag}</span>
+        <span className="font-medium">{currentLang.label}</span>
+        <ChevronDown size={14} className={cn("transition-transform duration-200", isOpen && "rotate-180")} />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.15 }}
+            className="absolute bottom-full mb-2 left-0 bg-[#1a1a2e] border border-white/10 rounded-xl overflow-hidden shadow-2xl min-w-[160px] z-50"
+          >
+            {LANGUAGES.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => {
+                  setLang(l.code);
+                  setIsOpen(false);
+                }}
+                className={cn(
+                  "w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/10 transition-colors text-left",
+                  lang === l.code ? "bg-white/5 text-white" : "text-slate-300"
+                )}
+              >
+                <span className="text-lg">{l.flag}</span>
+                <span className="font-medium">{l.label}</span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const Footer = () => {
+  const { t } = useI18n();
+
+  const navItems = [
+    { key: "nav.home", href: "home" },
+    { key: "nav.cars", href: "cars" },
+    { key: "nav.whyus", href: "whyus" },
+    { key: "nav.reviews", href: "reviews" },
+    { key: "nav.faq", href: "faq" },
+  ];
+
   return (
     <footer className="bg-dark text-white py-16">
       <div className="max-w-7xl mx-auto px-6">
@@ -915,30 +927,33 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-slate-400 max-w-sm mb-8 leading-relaxed">
-              Your reliable partner for car rentals in Sefrou, Morocco. We provide high-quality vehicles and exceptional customer service 24/7.
+              {t("footer.desc")}
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-4 mb-6">
               {[Instagram, Facebook, Twitter].map((Icon, i) => (
                 <a key={i} href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-casper hover:text-black transition-colors">
                   <Icon size={18} />
                 </a>
               ))}
             </div>
+
+            {/* Language Dropdown */}
+            <LanguageDropdown />
           </div>
 
           <div>
-            <h4 className="font-bold mb-6 text-lg">Quick Links</h4>
+            <h4 className="font-bold mb-6 text-lg">{t("footer.quickLinks")}</h4>
             <ul className="space-y-4 text-slate-400">
-              {["Home", "Cars", "Why Us", "Reviews", "FAQ"].map(item => (
-                <li key={item}>
-                  <a href={`#${item.toLowerCase().replace(" ", "")}`} className="hover:text-accent transition-colors">{item}</a>
+              {navItems.map(item => (
+                <li key={item.key}>
+                  <a href={`#${item.href}`} className="hover:text-accent transition-colors">{t(item.key)}</a>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold mb-6 text-lg">Contact Info</h4>
+            <h4 className="font-bold mb-6 text-lg">{t("footer.contactInfo")}</h4>
             <ul className="space-y-4 text-slate-400">
               <li className="flex gap-3 items-center">
                 <MapPin size={18} className="text-casper flex-shrink-0" />
@@ -950,17 +965,17 @@ const Footer = () => {
               </li>
               <li className="flex gap-3 items-center">
                 <Clock size={18} className="text-casper flex-shrink-0" />
-                <span>Open 24 Hours</span>
+                <span>{t("footer.open24")}</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-sm">
-          <p>© {new Date().getFullYear()} ZiaSri car. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ZiaSri car. {t("footer.rights")}</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors">{t("footer.privacy")}</a>
+            <a href="#" className="hover:text-white transition-colors">{t("footer.terms")}</a>
           </div>
         </div>
       </div>
@@ -969,18 +984,59 @@ const Footer = () => {
 };
 
 export default function App() {
+  const [cars, setCars] = useState<Car[]>([]);
+  const [faqs, setFaqs] = useState<FaqItem[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { dir } = useI18n();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [carsRes, faqsRes, reviewsRes] = await Promise.all([
+          supabase.from('fleets').select('*').order('id', { ascending: true }),
+          supabase.from('FAQ').select('*').order('id', { ascending: true }),
+          supabase.from('testimonials').select('*').order('id', { ascending: true }),
+        ]);
+
+        if (carsRes.data && carsRes.data.length > 0) setCars(carsRes.data);
+        if (faqsRes.data && faqsRes.data.length > 0) setFaqs(faqsRes.data);
+        if (reviewsRes.data && reviewsRes.data.length > 0) setReviews(reviewsRes.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dir = dir;
+    document.documentElement.lang = dir === "rtl" ? "ar" : dir === "ltr" ? "en" : "en";
+  }, [dir]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-16 h-16 border-4 border-slate-200 border-t-dark rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
       <main>
-        <Hero />
+        <Hero cars={cars} />
         <About />
-        <CarSection />
+        <CarSection cars={cars} />
         <WhyChooseUs />
         <HowItWorks />
-        <Reviews />
+        <Reviews reviews={reviews} />
         <Contact />
-        <FAQ />
+        <FAQ faqs={faqs} />
       </main>
       <Footer />
 
