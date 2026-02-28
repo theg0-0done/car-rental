@@ -53,7 +53,7 @@ export interface Car {
 
 interface Review {
   id: number;
-  "review-text": string;
+  "review-text-en": string;
   "review-text-fr": string;
   "review-text-ar": string;
   "customer-name": string;
@@ -666,9 +666,8 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
   const { t, lang } = useI18n();
 
   const getReviewText = (review: Review) => {
-    if (lang === "fr") return review["review-text-fr"] || review["review-text"];
-    if (lang === "ar") return review["review-text-ar"] || review["review-text"];
-    return review["review-text"];
+    const key = `review-text-${lang}` as keyof Review;
+    return (review[key] as string) || review["review-text-en"];
   };
   if (reviews.length === 0) return null;
 
