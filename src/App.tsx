@@ -28,15 +28,15 @@ import { useI18n, LANGUAGES, type Lang } from "./i18n";
 // --- Constants & Data ---
 
 const BUSINESS_INFO = {
-  name: "ZiaSri car",
-  phone: "06 61 87 15 05",
-  whatsapp: "212661871505",
-  location: "Sefrou, Morocco (31000)",
-  plusCode: "R5J7+6V Sefrou",
+  name: "LOGO",
+  phone: "06 00 00 00 00",
+  whatsapp: "21260000000",
+  location: "City, Country (00000)",
+  plusCode: "XXXX+XX City",
   rating: 5.0,
   reviewsCount: 29,
   openHours: "24 hours",
-  mapsLink: "https://www.google.com/maps/search/?api=1&query=R5J7%2B6V+Sefrou"
+  mapsLink: "https://maps.app.goo.gl/aCf1ErDkjHjXywB36"
 };
 
 export interface Car {
@@ -101,9 +101,9 @@ const Navbar = () => {
     )}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-dark rounded-lg flex items-center justify-center text-white font-bold text-xl">Z</div>
+          <div className="w-10 h-10 bg-dark rounded-lg flex items-center justify-center text-white font-bold text-xl">L</div>
           <span className={cn("font-display font-bold text-xl tracking-tight", isScrolled ? "text-dark" : "text-white")}>
-            ZiaSri <span className={cn(isScrolled ? "text-dove" : "text-casper")}>car</span>
+            LOGO
           </span>
         </div>
 
@@ -783,7 +783,7 @@ const Contact = () => {
 
             <div className="relative h-[400px] lg:h-auto bg-slate-200">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3072.62601920922!2d-4.840173053748704!3d33.83054770445643!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd9f9b438e61f353%3A0x31b22bbe17864646!2sZiaSri%20car!5e1!3m2!1sen!2sma!4v1772033141912!5m2!1sen!2sma"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24581.290200006304!2d-4.849176684478219!3d33.82956678028517!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd9f9a52d589a67d%3A0xdc2994680dcfab6b!2sSefrou!5e1!3m2!1sen!2sma!4v1772363042245!5m2!1sen!2sma"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -920,9 +920,9 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center text-white font-bold text-xl">Z</div>
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center text-white font-bold text-xl">L</div>
               <span className="font-display font-bold text-2xl tracking-tight">
-                ZiaSri <span className="text-accent">car</span>
+                LOGO
               </span>
             </div>
             <p className="text-slate-400 max-w-sm mb-8 leading-relaxed">
@@ -971,7 +971,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-sm">
-          <p>© {new Date().getFullYear()} ZiaSri car. {t("footer.rights")}</p>
+          <p>© {new Date().getFullYear()} LOGO. {t("footer.rights")}</p>
           <div className="flex gap-8">
             <a href="#" className="hover:text-white transition-colors">{t("footer.privacy")}</a>
             <a href="#" className="hover:text-white transition-colors">{t("footer.terms")}</a>
