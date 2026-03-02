@@ -972,10 +972,7 @@ const Footer = () => {
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-sm">
           <p>© {new Date().getFullYear()} LOGO. {t("footer.rights")}</p>
-          <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">{t("footer.privacy")}</a>
-            <a href="#" className="hover:text-white transition-colors">{t("footer.terms")}</a>
-          </div>
+          <p>made by <strong>Said Fateh</strong></p>
         </div>
       </div>
     </footer>
